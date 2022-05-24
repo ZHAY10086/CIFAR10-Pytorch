@@ -1,82 +1,62 @@
-![](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=PyTorch&logoColor=white)
-![](https://img.shields.io/badge/building-pass-green.svg)
-[![LICENSE](https://img.shields.io/github/license/JoeyBling/hexo-theme-yilia-plus "LICENSE")](./LICENSE "LICENSE")
-# Architecture
+# CIFAR-10
+## Introduction
+The CIFAR-10 dataset (Canadian Institute For Advanced Research) is a collection of images that are commonly used to train machine learning and computer vision algorithms. It is one of the most widely used datasets for machine learning research. The CIFAR-10 dataset contains 60,000 32x32 color images in 10 different classes. The 10 different classes represent airplanes, cars, birds, cats, deer, dogs, frogs, horses, ships, and trucks. There are 6,000 images of each class.
 
+
+![image](https://user-images.githubusercontent.com/67097978/169860407-8074c31b-4fd8-4111-ac43-90bcc00d33f7.png)
+
+
+## Prerequisites
+- **Python** 3.7.13
+- **PyTorch** 1.11.0
+- **Torchvision** 0.12.0
+- **CUDA** 11.2
+- **NumPy** 1.21.6
+- **Matplotlib** 3.2.2
+
+## Usage
+We implement our code on Jupyter Notebook, and run it on Google Colab. <br />
+Details about the CIFAR-10 dataset could be found at: https://www.cs.toronto.edu/~kriz/cifar.html
+
+#### Optimization Strategies:
+- Data Augmentation
+- Tuning hyperparameters
+- Using a more sophisticated CNN such as GoogLeNet
+
+#### The optimized hyperparameters we used:
+- **Learning rate:** 0.001
+- **Batch size:** 4
+- **Epochs:** 10
+- **Criterion:** CrossEntropy
+- **Optimizer:** SGD
+
+#### Structure of the repo:
 ```
-├── cnn
-  ├── README.md                              // Introduction of CNN model.
-  ├── src
-  │   ├──dataset.py                          // Dataset loader to feed into model.
-  │   ├──cnn_for_train.py                    // CNN train model architecture.
-  │   ├──cnn.py                              // CNN architecture.
-  |   ├──config.py                           // Parser arguments
-  ├── utils
-  │   ├──log.py                              // log for all the lines in terminal.
-  │   ├──plot.py                             // plot loss and accuracy graph.
-  ├── scripts
-  │   ├──exe.sh                              // shell script for training with our model.
-  │   ├──exe_alex.sh                         // shell script for training with Alexnet(Baseline).
-  │   ├──exe_res.sh                          // shell script for training with Resnet34(Best Result).
-  ├── train.py                               // Train API entry.
+├── models/
+│   ├── LeNet.py
+│   ├── AlexNet.py
+│   ├── VGGNet.py
+│   └── GoogLeNet.py
+├── Initial_CNN.ipynb
+├── Optimized_CNN.ipynb
+├── README.md
 ```
+- `Initial_CNN.ipynb` is the realization of the CNN with fairly poor accuracy (60.74%).
+- `Optimized_CNN.ipynb` is the realization of the CNN after optimization, using GoogLeNet (86.13%).
 
-# Train CIFAR10 with Torch
+## Results
+The following were the accuracy on the test set as well as the training time of different models: 
+Models | Accuracy (%) | Training Time (s)
+:---:|:---: | :---:
+[LeNet](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/LeNet.py) | 65.37 | 596.99
+[Alexnet](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/AlexNet.py) | 76.36 | 1420.02
+[VGG11](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/VGG.py) | 81.89 | 1200.45
+[VGG13](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/VGG.py) | 83.48 | 1359.55
+[GoogleNet](https://github.com/IvoryCandy/pytorch-cifar10/blob/master/models/GoogleNet.py) | 86.13 | 6113.05
 
-This is a very simple framework that can try our provided model or test your own PyTorch model on CIFAR10. 
+ <br />Here are the loss and accuracy varying to the epoch on the training set:
 
-It’s easy to use and flexible at the same time.
+![image](https://user-images.githubusercontent.com/67097978/169862338-415273a2-a1fd-406e-8f0f-786baeb36cfd.png)
 
-## Requirement
+![image](https://user-images.githubusercontent.com/67097978/169862362-dbe7cfa7-df31-4a87-a79f-02f68b50ec85.png)
 
-Our experiments are conducted under these environments:
-
-| Operating System |                 Device                 |    Torch     |
-| :--------------: | :------------------------------------: | :----------: |
-|   Ubuntu 20.04   |  NVIDIA GeForce RTX 3090*1, Cuda:11.5  | 1.11.0+cu113 |
-|   Ubuntu 20.04   | NVIDIA GeForce RTX 2080Ti*1, Cuda:11.3 | 1.10.0+cu113 |
-|                  |                                        |              |
-
-You can first alter the configuration such as the device and some hyperparameters in the **config.py**.
-
-We highly recommend you to use the bash scripts to simply run
-
-```shell
-cd [Your Path]/cnn
-sh scripts/exe.sh
-```
-
-or you can run by 
-
-```
-cd [Your Path]/cnn
-python train.py
-```
-
-The Model will be stored in the checkpoint folder if the testing accuracy is bigger than the threshold accuracy(default: 80) which you can define in the config.py.
-
-
-
-We offer 3 types of bash scripts for you to try, which the hyper-parameters are tuned and the result is the same in our report.
-
-# Benchmark
-
-|                         Model(mode)                          | Test Acc |
-| :----------------------------------------------------------: | :------: |
-|                           Ours(0)                            |          |
-|   [LeNet](https://ieeexplore.ieee.org/document/726791)(1)    |  72.800  |
-| [AlexNet](https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf)(2) |  78.090  |
-| [GoogleNet](https://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Szegedy_Going_Deeper_With_2015_CVPR_paper.pdf)(3) |  84.120  |
-|    [Resnet18](https://arxiv.org/pdf/1512.03385v1.pdf)(4)     |  83.810  |
-| [Resent34](https://arxiv.org/pdf/1512.03385v1.pdf)(w pretrian)(5) |  96.620  |
-| [DenseNet](https://arxiv.org/pdf/1608.06993.pdf)(w pretrian)(6) |  86.810  |
-
-Configuration of our simple CNN model will be discusses in the report.
-
-
-
-**Resnet34** are finetuned with 35 epochs with learning rate 1e-5.
-
-Other models are running under default setting in config.py.
-
-All the result is in folder **appendix** to see our full result.
